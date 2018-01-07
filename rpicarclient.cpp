@@ -8,10 +8,14 @@ RPiCarClient::RPiCarClient(QWidget *parent) :
     ui->setupUi(this);
 
     timer = new QTimer();
-        timer->setInterval(1000/60);
-        timer->start();
+    timer->setInterval(1000/60);
+    timer->start();
 
-        connect(timer, &QTimer::timeout, this, &RPiCarClient::timerOutEvent);
+    connect(timer, &QTimer::timeout, this, &RPiCarClient::timerOutEvent);
+
+    /*Deshabilitar widgets de UI*/
+    ui->speedSlider->setEnabled(false);
+    ui->angleDial->setEnabled(false);
 }
 
 RPiCarClient::~RPiCarClient()
