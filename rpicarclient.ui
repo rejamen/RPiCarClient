@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>499</width>
-    <height>378</height>
+    <width>451</width>
+    <height>427</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,24 +15,36 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QSlider" name="speedSlider">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>50</x>
-      <y>50</y>
-      <width>51</width>
-      <height>221</height>
+      <y>40</y>
+      <width>41</width>
+      <height>271</height>
      </rect>
+    </property>
+    <property name="maximum">
+     <number>255</number>
+    </property>
+    <property name="sliderPosition">
+     <number>0</number>
     </property>
     <property name="orientation">
      <enum>Qt::Vertical</enum>
     </property>
    </widget>
    <widget class="QDial" name="angleDial">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
-      <x>200</x>
-      <y>100</y>
-      <width>121</width>
+      <x>220</x>
+      <y>150</y>
+      <width>91</width>
       <height>111</height>
      </rect>
     </property>
@@ -40,27 +52,27 @@
    <widget class="QLabel" name="speedLabel">
     <property name="geometry">
      <rect>
-      <x>70</x>
-      <y>280</y>
+      <x>40</x>
+      <y>320</y>
       <width>67</width>
       <height>17</height>
      </rect>
     </property>
     <property name="text">
-     <string>0</string>
+     <string>TextLabel</string>
     </property>
    </widget>
    <widget class="QLabel" name="angleLabel">
     <property name="geometry">
      <rect>
       <x>230</x>
-      <y>210</y>
+      <y>260</y>
       <width>67</width>
       <height>17</height>
      </rect>
     </property>
     <property name="text">
-     <string>0</string>
+     <string>TextLabel</string>
     </property>
    </widget>
   </widget>
@@ -69,7 +81,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>499</width>
+     <width>451</width>
      <height>25</height>
     </rect>
    </property>

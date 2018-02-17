@@ -1,6 +1,14 @@
 #ifndef RPICARCLIENT_H
 #define RPICARCLIENT_H
 
+#define SPEED_STEP 10
+#define MIN_SPEED 0;
+#define MAX_SPEED 255;
+
+#define ANGLE_STEP 10
+#define MIN_ANGLE 0;
+#define MAX_ANGLE 255;
+
 #include <QMainWindow>
 #include <QMap>
 #include <QTimer>
@@ -21,6 +29,10 @@ public:
 
 private:
     Ui::RPiCarClient *ui;
+
+public:
+    int speed;
+    int angle;
 
 private:
     QTimer *timer;
