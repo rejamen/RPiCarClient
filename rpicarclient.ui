@@ -26,6 +26,9 @@
       <height>271</height>
      </rect>
     </property>
+    <property name="minimum">
+     <number>-30</number>
+    </property>
     <property name="maximum">
      <number>255</number>
     </property>

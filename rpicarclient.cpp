@@ -14,15 +14,48 @@ RPiCarClient::RPiCarClient(QWidget *parent) :
 
     connect(timer, &QTimer::timeout, this, &RPiCarClient::timerOutEvent);
 
-    /*Deshabilitar widgets de UI*/
-    /*ui->speedSlider->setEnabled(false);
-    ui->angleDial->setEnabled(false);*/
-
+    //init variables de estado
     speed = MIN_SPEED;
-    angle = MIN_ANGLE;
+    angle = INITIAL_ANGLE;
+    status = "off";
+    direction = "forward";
+    flag = false;
+
+
+    ui->angleDial->setValue(INITIAL_ANGLE);
+    ui->angleLabel->setText(QString::number(ui->angleDial->sliderPosition()));
+
+    ui->speedLabel->setText(QString::number(ui->speedSlider->sliderPosition()));
+
 }
 //*********************************************************************************
+void RPiCarClient::sendSpeed()
+{
+    sendCommand(QString::number(speed));
+}
+//*********************************************************************************
+void RPiCarClient::sendDirection()
+{
+    sendCommand(direction);
+}
+//*********************************************************************************
+void RPiCarClient::sendStatus()
+{
+    sendCommand(status);
 
+}
+//*********************************************************************************
+void RPiCarClient::sendAngle()
+{
+    sendCommand(QString::number(angle));
+
+}
+//*********************************************************************************
+void RPiCarClient::sendCommand(QString cmd)
+{
+    //Aqui va la implementacion de la Cx con el Server
+}
+//*********************************************************************************
 RPiCarClient::~RPiCarClient()
 {
     delete ui;
@@ -31,59 +64,139 @@ RPiCarClient::~RPiCarClient()
 void RPiCarClient::timerOutEvent()
 {
 
-    QString txt = "";
 
-    if(keys[Qt::Key_Up])
+    flag = false;
+
+    if(keys[Qt::Key_Up]) //Se presiona la tecla ARRIBA
     {
-        txt += "u";
+        timer->setInterval(1000/60);
 
         //tomo la posicion actual del slider
         int valorActual = ui->speedSlider->sliderPosition();
-        int nuevoValor = valorActual + 5;
+        speed = valorActual + SPEED_STEP;
 
-        ui->speedSlider->setSliderPosition(nuevoValor);
-        ui->speedLabel->setText(QString::number(nuevoValor));
+        if (speed > MAX_SPEED)
+        {
+           speed = MAX_SPEED;
+        }
+
+        ui->speedSlider->setSliderPosition(speed);
+        ui->speedLabel->setText(QString::number(speed));
+
+        direction = "forward";
+        flag = true;
+
     }
     if(keys[Qt::Key_Down])
     {
-        txt += "d";
+        timer->setInterval(1000/60);
+
         //tomo la posicion actual del slider
         int valorActual = ui->speedSlider->sliderPosition();
-        int nuevoValor = valorActual - 5;
+        speed = valorActual - SPEED_STEP;
 
-        ui->speedSlider->setSliderPosition(nuevoValor);
-        ui->speedLabel->setText(QString::number(nuevoValor));
+        if (speed < MAX_BACKWARD_SPEED) //se establece una velocidad maxima para la reversa
+        {
+            speed = MAX_BACKWARD_SPEED;
+        }
+
+        ui->speedSlider->setSliderPosition(speed);
+        ui->speedLabel->setText(QString::number(speed));
+
+        if (speed < 0)
+            direction = "backward";
+
+        flag = true;
+
+
     }
     if(keys[Qt::Key_Left])
     {
-        txt += "l";
-
+        timer->setInterval(1000/20);
         //tomo la posicion actual del dial
         int valorActual = ui->angleDial->sliderPosition();
-        int nuevoValor = valorActual - 1;
+        angle = valorActual - ANGLE_STEP;
 
-        ui->angleDial->setSliderPosition(nuevoValor);
-        ui->angleLabel->setText(QString::number(nuevoValor));
+        if (angle < MIN_ANGLE)
+        {
+            angle = MIN_ANGLE;
+        }
+
+        ui->angleDial->setSliderPosition(angle);
+        ui->angleLabel->setText(QString::number(angle));
+
+
     }
     if(keys[Qt::Key_Right])
     {
-        txt += "r";
-
+        timer->setInterval(1000/20);
         //tomo la posicion actual del dial
         int valorActual = ui->angleDial->sliderPosition();
-        int nuevoValor = valorActual + 1;
+        angle = valorActual + ANGLE_STEP;
 
-        ui->angleDial->setSliderPosition(nuevoValor);
-        ui->angleLabel->setText(QString::number(nuevoValor));
+        if (angle > MAX_ANGLE)
+        {
+            angle = MAX_ANGLE;
+        }
+
+        ui->angleDial->setSliderPosition(angle);
+        ui->angleLabel->setText(QString::number(angle));
+
     }
 
-    qDebug() << txt;
+    if (speed != 0)
+        status = "on";
+    else
+        status = "off";
+
+
+    qDebug() << "Status: " + status;
+    qDebug() << "Direction: " + direction;
+    qDebug() << "Speed: " + QString::number(speed);
+    qDebug() << "Angle: " + QString::number(angle);
+    qDebug() << flag;
+
+    checkFlag();
+
+    sendSpeed();
+    sendDirection();
+    sendAngle();
+    sendStatus();
+
+
+
+}
+//*********************************************************************************
+void RPiCarClient::checkFlag()
+{
+    /*Funcion para comprobar el valor de la variable txt
+     *Desacelero si no tengo presionado UP, o sea si txt no tiene la letra U
+    */
+    if (! flag )
+    {
+         timer->setInterval(1000/20);
+        //tomo la posicion actual del slider
+        int valorActual = ui->speedSlider->sliderPosition();
+        speed = valorActual - SPEED_STEP;
+
+        if (speed < MIN_SPEED) //se establece una velocidad maxima para la reversa
+        {
+            speed = MIN_SPEED;
+        }
+
+        ui->speedSlider->setSliderPosition(speed);
+        ui->speedLabel->setText(QString::number(speed));
+
+
+    }
+
 }
 //*********************************************************************************
 void RPiCarClient::keyReleaseEvent(QKeyEvent *event)
 {
     keys[event->key()] = false;
     QWidget::keyReleaseEvent(event);
+
 }
 //*********************************************************************************
 void RPiCarClient::keyPressEvent(QKeyEvent *event)
