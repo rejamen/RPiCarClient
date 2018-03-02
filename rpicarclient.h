@@ -7,16 +7,18 @@
 
 #define MAX_BACKWARD_SPEED -30
 
-#define ANGLE_STEP 3
-#define MIN_ANGLE 30
-#define MAX_ANGLE 70
-#define INITIAL_ANGLE 50
+#define ANGLE_STEP 5
+#define MIN_ANGLE 140
+#define MAX_ANGLE 230
+#define INITIAL_ANGLE 180
 
 #include <QMainWindow>
 #include <QMap>
 #include <QTimer>
 #include <QDebug>
 #include <QKeyEvent>
+#include <QTcpSocket>
+#include <QMessageBox>
 
 namespace Ui {
 class RPiCarClient;
@@ -35,17 +37,25 @@ private:
 
 public:
     int speed;
-    QString direction;
-    QString status;
+    QByteArray direction;
+    QByteArray status;
     int angle;
 
     bool flag;
+
+    //Server side
+    QTcpSocket *tcpSocket;
+    int port;
+    QString serverAddress;
+    bool error; //para saber si hay error de conexion
+
+
 
     void sendSpeed();
     void sendDirection();
     void sendStatus();
     void sendAngle();
-    void sendCommand(QString);
+
     void checkFlag();
 
 private:
@@ -56,6 +66,13 @@ private:
 
 private slots:
     void timerOutEvent();
+
+    //Server side
+    void connectToServer();
+    void sendCommand(QByteArray);
+    void slotReadClient();
+    void displayError(QAbstractSocket::SocketError socketError);
+
 
 };
 
